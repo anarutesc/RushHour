@@ -165,7 +165,16 @@ class RushHour {
         queue<State*> Q;
         Q.push(s);
         while (!Q.empty()) {
-            // A SER COMPLETADO
+            /*State *estadoAtual = Q.pop_back();
+	    list<State*> vizinhos = moves(estadoAtual);
+	    for(para cada vizinho){
+	    	if(vizinhos[i].sucess()){
+			return vizinhos[i];
+		}else{
+			Q.push(vizinhos[i]);
+		}
+	    }
+	    */
         }
         cerr << "sem solução" << endl; exit(1);
     }
