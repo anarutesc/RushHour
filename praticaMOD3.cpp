@@ -16,9 +16,10 @@ using __gnu_cxx::hash_set;
 
 //using namespace boost::assign;
 using namespace std;
-class State {
+class State
+{
 
-   public:
+public:
     /*
      * o estado fornece a posição de cada veículo, utilizando a seguinte convenção :
      * para um veículo horizontal é a coluna da casa mais à esquerda
@@ -37,7 +38,8 @@ class State {
     /*
      * constrói um estado inicial (c e d recebem qualquer valor = lixo)
      */
-    State(vector<int>& p) {
+    State(vector<int>& p)
+    {
         //pos = new int[p.size()];
         int tam = p.size();
         for (int i = 0; i < tam; i++)
@@ -48,7 +50,8 @@ class State {
     /*
      * constrói um estado obtido a partir de s deslocando-se o veículo c de d (-1 ou +1)
      */
-    State(State* s, int c, int d) {
+    State(State* s, int c, int d)
+    {
         vector<int> pos_atual;
         prev = s;
         pos = prev->pos;
@@ -57,12 +60,15 @@ class State {
     }
 
     // nós ganhamos?
-    bool success() {
+    bool success()
+    {
         return pos[0]==4; // A SER COMPLETADO
     }
 
-    bool equals(State* s) {
-        if (s->pos.size() != pos.size()){
+    bool equals(State* s)
+    {
+        if (s->pos.size() != pos.size())
+        {
             cerr << "Estados de comprimento diferentes" << endl;
             exit(1);
         }
@@ -87,34 +93,37 @@ class State {
 //função hash
 struct hash_state
 {
-   size_t operator()(const State* t) const
-   {
-     int h = 0;
+    size_t operator()(const State* t) const
+    {
+        int h = 0;
 
-     for (int i = 0; i < t->pos.size(); i++)
+        for (int i = 0; i < t->pos.size(); i++)
             h = 37 * h + t->pos[i];
 
-     return h;
-   }
+        return h;
+    }
 };
 
 //função igualdade para hash_set
 struct eq_state
 {
-   bool operator()(const State* t1, const State* t2) const {
+    bool operator()(const State* t1, const State* t2) const
+    {
 
-       if(t1->pos.size() != t2->pos.size()) return false;
-       for(int i=0; i < t1->pos.size(); i++){
-               if(t1->pos[i] != t2->pos[i]) return false;
+        if(t1->pos.size() != t2->pos.size()) return false;
+        for(int i=0; i < t1->pos.size(); i++)
+        {
+            if(t1->pos[i] != t2->pos[i]) return false;
 
-       }
-      return true;
-   }
+        }
+        return true;
+    }
 };
 
-class RushHour {
+class RushHour
+{
 
-      public:
+public:
 
     /*
      * a representação do problema é :
@@ -145,53 +154,108 @@ class RushHour {
      */
     bool free[6][6];
 
-    void initFree(State* s) {
-        // A SER COMPLETADA
+    void initFree(State* s)
+    {
+        for(int i = 0; i < 6; i++)
+        {
+            for(int j = 0; j < 6; j++)
+            {
+                free[i][j] = true;
+            }
+        }
+
+        for(int i = 0; i < nbcars; i++)
+        {
+            if(horiz[i])
+            {
+                free[moveon[i]][s->pos[i]] = false;
+                free[moveon[i]][s->pos[i]+1] = false;
+                if(len[i] == 3)
+                {
+                    free[moveon[i]][s->pos[i]+2] = false;
+                }
+            }
+            else
+            {
+                free[s->pos[i]][moveon[i]] = false;
+                free[s->pos[i]][moveon[i]+1] = false;
+                if(len[i] == 3)
+                    free[s->pos[i]+2][moveon[i]] = false;
+            }
+        }
     }
+
+    void test2()
+{
+    nbcars = 8;
+    bool horiz1[] = {true, true, false, false, true, true, false, false};
+    horiz.assign(horiz1, horiz1+8);
+    int len1[] = {2,2,3,2,3,2,3,3};
+    len.assign(len1,len1+8);
+    int moveon1[] = {2,0,0,0,5,4,5,3};
+    moveon.assign(moveon1,moveon1+8);
+    int start1[] = {1,0,1,4,2,4,0,1};
+    vector<int> start(start1,start1+8);
+    State* s = new State(start);
+    initFree(s);
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 6; j++)
+            cout << free[i][j] + "\t";
+        cout << endl;
+    }
+}
+
+
 
     /*
      * retorna a lista de deslocamentos a partir de s
      */
 
-    list<State*> moves(State* s) {
+    list<State*> moves(State* s)
+    {
         initFree(s);
         list<State*> l;
-        // A SER COMPLETADA
+
         return l;
     }
 
     /*
      * procura uma solução a partir de s
      */
-    State* solve(State* s) {
+    State* solve(State* s)
+    {
         hash_set<State*,hash_state,eq_state> visited;
         visited.insert(s);
         queue<State*> Q;
         Q.push(s);
-        while (!Q.empty()) {
+        while (!Q.empty())
+        {
             /*State *estadoAtual = Q.front();
-        Q.pop_back();
-        list<State*> vizinhos = moves(estadoAtual);
-        for(-- para cada vizinho --){
+            Q.pop_back();
+            list<State*> vizinhos = moves(estadoAtual);
+            for(-- para cada vizinho --){
             if(vizinhos[i].sucess()){
             return vizinhos[i];
-        }else{
+            }else{
             if(!visited.find(estadoAtual)){
                 Q.push(vizinhos[i]);
                 visited.insert(estadoAtual);
             }
+            }
+            }
+            */
         }
-         }
-        */
-        }
-        cerr << "sem solução" << endl; exit(1);
+        cerr << "sem solução" << endl;
+        exit(1);
     }
 
     /*
      * imprime uma solução
      */
 
-    void printSolution(State* s) {
+    void printSolution(State* s)
+    {
         // A SER COMPLETADO
     }
 
@@ -200,7 +264,8 @@ class RushHour {
 
 
 
-void test1() {
+void test1()
+{
 
     int positioning[] = {1,0,1,4,2,4,0,1};
     vector<int> start(positioning, positioning+8);
@@ -220,18 +285,29 @@ void test1() {
     s = new State(s0,1,1);
     s = new State(s,2,-1);
     s = new State(s,3,-1);
-    s = new State(s,4,-1); s = new State(s, 4, -1);
-    s = new State(s,5,-1); s = new State(s,5,-1); s = new State(s,5,-1);
-    s = new State(s,6,1); s = new State(s, 6, 1); s = new State(s, 6, 1);
-    s = new State(s,7,1); s = new State(s, 7, 1);
-    s = new State(s,0,1); s = new State(s,0,1); s = new State(s,0,1);
+    s = new State(s,4,-1);
+    s = new State(s, 4, -1);
+    s = new State(s,5,-1);
+    s = new State(s,5,-1);
+    s = new State(s,5,-1);
+    s = new State(s,6,1);
+    s = new State(s, 6, 1);
+    s = new State(s, 6, 1);
+    s = new State(s,7,1);
+    s = new State(s, 7, 1);
+    s = new State(s,0,1);
+    s = new State(s,0,1);
+    s = new State(s,0,1);
 
     cout << (s->success()) << endl;
 }
 
 
 
-int main(){
 
-    test1();
-    }
+
+int main()
+{
+    RushHour *rh = new RushHour;
+    rh->test2();
+}
