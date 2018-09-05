@@ -161,6 +161,7 @@ public:
             for(int j = 0; j < 6; j++)
             {
                 free[i][j] = true;
+
             }
         }
 
@@ -170,41 +171,44 @@ public:
             {
                 free[moveon[i]][s->pos[i]] = false;
                 free[moveon[i]][s->pos[i]+1] = false;
-                if(len[i] == 3)
-                {
+                if(len[i] == 3){
                     free[moveon[i]][s->pos[i]+2] = false;
                 }
             }
             else
             {
                 free[s->pos[i]][moveon[i]] = false;
-                free[s->pos[i]][moveon[i]+1] = false;
-                if(len[i] == 3)
+                free[s->pos[i]+1][moveon[i]] = false;
+                if(len[i] == 3){
                     free[s->pos[i]+2][moveon[i]] = false;
+
+                }
             }
         }
     }
 
+
     void test2()
-{
-    nbcars = 8;
-    bool horiz1[] = {true, true, false, false, true, true, false, false};
-    horiz.assign(horiz1, horiz1+8);
-    int len1[] = {2,2,3,2,3,2,3,3};
-    len.assign(len1,len1+8);
-    int moveon1[] = {2,0,0,0,5,4,5,3};
-    moveon.assign(moveon1,moveon1+8);
-    int start1[] = {1,0,1,4,2,4,0,1};
-    vector<int> start(start1,start1+8);
-    State* s = new State(start);
-    initFree(s);
-    for (int i = 0; i < 6; i++)
     {
-        for (int j = 0; j < 6; j++)
-            cout << free[i][j] + "\t";
-        cout << endl;
+        nbcars = 8;
+        bool horiz1[] = {true, true, false, false, true, true, false, false};
+        horiz.assign(horiz1, horiz1+8);
+        int len1[] = {2,2,3,2,3,2,3,3};
+        len.assign(len1,len1+8);
+        int moveon1[] = {2,0,0,0,5,4,5,3};
+        moveon.assign(moveon1,moveon1+8);
+        int start1[] = {1,0,1,4,2,4,0,1};
+        vector<int> start(start1,start1+8);
+        State* s = new State(start);
+        initFree(s);
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+                cout << free[i][j] << ' ';
+
+            cout << endl;
+        }
     }
-}
 
 
 
@@ -216,9 +220,84 @@ public:
     {
         initFree(s);
         list<State*> l;
+        State* aux;
+        aux = s;
+        for(int i = 0; i < nbcars; i++){
+
+            if(horiz[i]){
+                if(s->pos[i] != 0){
+                    if(free[moveon[i]][s->pos[i]-1]){
+                        aux->pos[i] = s->pos[i] - 1;
+                        l.push_back(aux);
+                    }
+                }
+                if(s->pos[i] != 4){
+                    if(free[moveon[i]][s->pos[i]+len[i]]){
+                        aux->pos[i] = s->pos[i] + len[i];
+                        l.push_back(aux);
+                    }
+                }
+            }else{
+                if(s->pos[i] != 0){
+                    if(free[s->pos[i]-1][moveon[i]]){
+                        aux->pos[i] = s->pos[i] - 1;
+                        l.push_back(aux);
+                    }
+                }
+                if(s->pos[i] != 4){
+                    if(free[s->pos[i]+len[i]][moveon[i]]){
+                        aux->pos[i] = s->pos[i] + len[i];
+                        l.push_back(aux);
+                    }
+                }
+            }
+        }
 
         return l;
     }
+
+
+    void test3(){
+        nbcars = 12;
+        bool horiz1[] = {true, false, true, false, false, true, false, true,
+                         false, true, false, true};
+        horiz.assign(horiz1, horiz1+nbcars);
+        int len1[] = {2,2,3,2,3,2,2,2,2,2,2,3};
+        len.assign(len1,len1+12);
+        int moveon1[] = {2,2,0,0,3,1,1,3,0,4,5,5};
+        moveon.assign(moveon1,moveon1+nbcars);
+        int start1[] = {1,0,3,1,1,4,3,4,4,2,4,1};
+        vector<int> start(start1,start1+nbcars);
+        State* s = new State(start);
+        int start02[] = {1,0,3,1,1,4,3,4,4,2,4,2};
+        vector<int> start2(start02,start02+nbcars);
+        State* s2 = new State(start2);
+
+        int n = 0;
+        for (list<State*> L = moves(s); !L.empty(); n++) L.pop_front();
+        cout << n << endl;
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+                cout << free[i][j] << ' ';
+
+            cout << endl;
+        }
+
+
+        n = 0;
+        for (list<State*> L = moves(s2); !L.empty(); n++) L.pop_front();
+        cout << n << endl;
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+                cout << free[i][j] << ' ';
+
+            cout << endl;
+        }
+
+    }
+
 
     /*
      * procura uma solução a partir de s
@@ -309,5 +388,5 @@ void test1()
 int main()
 {
     RushHour *rh = new RushHour;
-    rh->test2();
+    rh->test3();
 }
