@@ -309,25 +309,24 @@ public:
         Q.push(s);
         while (!Q.empty())
         {
-            /*State *estadoAtual = Q.front();
-            Q.pop_back();
+            State *estadoAtual = Q.front();
+            Q.pop();
             list<State*> vizinhos = moves(estadoAtual);
-            for(-- para cada vizinho --){
-            if(vizinhos[i].sucess()){
-            return vizinhos[i];
-            }else{
-            if(!visited.find(estadoAtual)){
-                Q.push(vizinhos[i]);
-                visited.insert(estadoAtual);
+            for(State *i = vizinhos.front(); i != vizinhos.back(); i++){
+                if(i->success()){
+                    return i;
+                }else{
+                    if(visited.find(estadoAtual) == visited.end()){
+                        Q.push(i);
+                        visited.insert(estadoAtual);
+                    }
+                }
             }
-            }
-            }
-            */
+
         }
         cerr << "sem solução" << endl;
         exit(1);
     }
-
     /*
      * imprime uma solução
      */
