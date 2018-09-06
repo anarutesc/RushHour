@@ -216,37 +216,36 @@ public:
      * retorna a lista de deslocamentos a partir de s
      */
 
-    list<State*> moves(State* s)
+     list<State*> moves(State* s)
     {
         initFree(s);
         list<State*> l;
-        State* aux;
-        aux = s;
+
         for(int i = 0; i < nbcars; i++){
 
             if(horiz[i]){
                 if(s->pos[i] != 0){
                     if(free[moveon[i]][s->pos[i]-1]){
-                        aux->pos[i] = s->pos[i] - 1;
+                        State *aux = new State(s,i,-1);
                         l.push_back(aux);
                     }
                 }
-                if(s->pos[i] != 4){
+                if(s->pos[i] != 4 || (s->pos[i] != 3 && len[i] == 3)){
                     if(free[moveon[i]][s->pos[i]+len[i]]){
-                        aux->pos[i] = s->pos[i] + len[i];
+                        State *aux = new State(s,i,1);
                         l.push_back(aux);
                     }
                 }
             }else{
                 if(s->pos[i] != 0){
                     if(free[s->pos[i]-1][moveon[i]]){
-                        aux->pos[i] = s->pos[i] - 1;
+                        State *aux = new State(s,i,-1);
                         l.push_back(aux);
                     }
                 }
-                if(s->pos[i] != 4){
+                if(s->pos[i] != 4 || (s->pos[i] != 3 && len[i] == 3) ){
                     if(free[s->pos[i]+len[i]][moveon[i]]){
-                        aux->pos[i] = s->pos[i] + len[i];
+                        State *aux = new State(s,i,1);
                         l.push_back(aux);
                     }
                 }
