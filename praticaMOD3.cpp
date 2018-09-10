@@ -52,10 +52,11 @@ public:
      */
     State(State* s, int c, int d)
     {
-        vector<int> pos_atual;
+        this->c = c;
+        this->d = d;
+
         prev = s;
-        pos = prev->pos;
-        pos_atual = pos;
+        pos = s->pos;
         pos[c] = pos[c] + d;
     }
 
@@ -216,7 +217,7 @@ public:
      * retorna a lista de deslocamentos a partir de s
      */
 
-     list<State*> moves(State* s)
+    list<State*> moves(State* s)
     {
         initFree(s);
         list<State*> l;
@@ -312,13 +313,14 @@ public:
             State *estadoAtual = Q.front();
             Q.pop();
             list<State*> vizinhos = moves(estadoAtual);
-            for(State *i = vizinhos.front(); i != vizinhos.back(); i++){
+            for(auto i:vizinhos){
                 if(i->success()){
+
                     return i;
                 }else{
-                    if(visited.find(estadoAtual) == visited.end()){
+                    if(visited.find(i) == visited.end()){
                         Q.push(i);
-                        visited.insert(estadoAtual);
+                        visited.insert(i);
                     }
                 }
             }
@@ -327,96 +329,117 @@ public:
         cerr << "sem solução" << endl;
         exit(1);
     }
-    
+
     void test4() {
-nbcars = 12;
-string color1[] = {"vermelho","verde claro","amarelo","laranja",
-"violeta claro","azul ceu","rosa","violeta","verde","preto","bege","azul"};
-color.assign(color1, color1+nbcars);
-bool horiz1[] = {true, false, true, false, false, true, false,
-true, false, true, false, true};
-horiz.assign(horiz1, horiz1+nbcars);
-int len1[] = {2,2,3,2,3,2,2,2,2,2,2,3};
-len.assign(len1,len1+nbcars);
-int moveon1[] = {2,2,0,0,3,1,1,3,0,4,5,5};
-moveon.assign(moveon1,moveon1+nbcars);
-int start1[] = {1,0,3,1,1,4,3,4,4,2,4,1};
-vector<int> start(start1,start1+nbcars);
-State* s = new State(start);
-int n = 0;
-for (s = solve(s); s.prev != null; s = s.prev) n++;
-cout << n << endl;
-}
+        nbcars = 12;
+        string color1[] = {"vermelho","verde claro","amarelo","laranja",
+                           "violeta claro","azul ceu","rosa","violeta","verde","preto","bege","azul"};
+        color.assign(color1, color1+nbcars);
+        bool horiz1[] = {true, false, true, false, false, true, false,
+                         true, false, true, false, true};
+        horiz.assign(horiz1, horiz1+nbcars);
+        int len1[] = {2,2,3,2,3,2,2,2,2,2,2,3};
+        len.assign(len1,len1+nbcars);
+        int moveon1[] = {2,2,0,0,3,1,1,3,0,4,5,5};
+        moveon.assign(moveon1,moveon1+nbcars);
+        int start1[] = {1,0,3,1,1,4,3,4,4,2,4,1};
+        vector<int> start(start1,start1+nbcars);
+        State* s = new State(start);
+        int n = 0;
+        for (s = solve(s); s->prev != NULL; s = s->prev){
+            n++;
+        }
+        cout << n << endl;
+    }
 
-void solve22() {
-nbcars = 12;
-string color1[] = {"vermelho","verde claro","amarelo","laranja",
-"violeta claro","azul ceu","rosa","violeta","verde","preto","bege","azul"};
-color.assign(color1, color1+nbcars);
-bool horiz1[] = {true, false, true, false, false, true, false,
-true, false, true, false, true};
-horiz.assign(horiz1, horiz1+nbcars);
-int len1[] = {2,2,3,2,3,2,2,2,2,2,2,3};
-len.assign(len1,len1+nbcars);
-int moveon1[] = {2,2,0,0,3,1,1,3,0,4,5,5};
-moveon.assign(moveon1,moveon1+nbcars);
-int start1[] = {1,0,3,1,1,4,3,4,4,2,4,1};
-vector<int> start(start1,start1+nbcars);
-State* s = new State(start);
-s = solve(s);
-printSolution(s);
-}
+    void solve22() {
+        nbcars = 12;
+        string color1[] = {"vermelho","verde claro","amarelo","laranja",
+                           "violeta claro","azul ceu","rosa","violeta","verde","preto","bege","azul"};
+        color.assign(color1, color1+nbcars);
+        bool horiz1[] = {true, false, true, false, false, true, false,
+                         true, false, true, false, true};
+        horiz.assign(horiz1, horiz1+nbcars);
+        int len1[] = {2,2,3,2,3,2,2,2,2,2,2,3};
+        len.assign(len1,len1+nbcars);
+        int moveon1[] = {2,2,0,0,3,1,1,3,0,4,5,5};
+        moveon.assign(moveon1,moveon1+nbcars);
+        int start1[] = {1,0,3,1,1,4,3,4,4,2,4,1};
+        vector<int> start(start1,start1+nbcars);
+        State* s = new State(start);
+        s = solve(s);
+        printSolution(s);
+    }
 
-void solve1() {
-nbcars = 8;
-string color1[] = {"vermelho","verde claro","violeta",
-"laranja","verde","azul ceu","amarelo","azul"};
-color.assign(color1, color1+nbcars);
-bool horiz1[] = {true, true, false, false, true,
-true, false, false};
-horiz.assign(horiz1, horiz1+nbcars);
-int len1[] = {2,2,3,2,3,2,3,3};
-len.assign(len1,len1+nbcars);
-int moveon1[] = {2,0,0,0,5,4,5,3};
-moveon.assign(moveon1,moveon1+nbcars);
-int start1[] = {1,0,1,4,2,4,0,1};
-vector<int> start(start1,start1+nbcars);
-State* s = new State(start);
-s = solve(s);
-printSolution(s);
-}
-    
-void solve40() {
-nbcars = 13;
-string color1[] = {"vermelho","amarelo","verde claro","laranja","azul claro",
-"rosa","violeta claro","azul","violeta","verde","preto","bege","amarelo claro"};
-color.assign(color1, color1+nbcars);
-bool horiz1[] = {true, false, true, false, false, false, false,
-true, false, false, true, true, true};
-horiz.assign(horiz1, horiz1+nbcars);
-int len1[] = {2,3,2,2,2,2,3,3,2,2,2,2,2};
-len.assign(len1,len1+nbcars);
-int moveon1[] = {2,0,0,4,1,2,5,3,3,2,4,5,5};
-moveon.assign(moveon1,moveon1+nbcars);
-int start1[] = {3,0,1,0,1,1,1,0,3,4,4,0,3};
-vector<int> start(start1,start1+nbcars);
-State* s = new State(start);
-s = solve(s);
-printSolution(s);
-}
-    
+    void solve1() {
+        nbcars = 8;
+        string color1[] = {"vermelho","verde claro","violeta",
+                           "laranja","verde","azul ceu","amarelo","azul"};
+        color.assign(color1, color1+nbcars);
+        bool horiz1[] = {true, true, false, false, true,
+                         true, false, false};
+        horiz.assign(horiz1, horiz1+nbcars);
+        int len1[] = {2,2,3,2,3,2,3,3};
+        len.assign(len1,len1+nbcars);
+        int moveon1[] = {2,0,0,0,5,4,5,3};
+        moveon.assign(moveon1,moveon1+nbcars);
+        int start1[] = {1,0,1,4,2,4,0,1};
+        vector<int> start(start1,start1+nbcars);
+        State* s = new State(start);
+        s = solve(s);
+        printSolution(s);
+    }
+
+    void solve40() {
+        nbcars = 13;
+        string color1[] = {"vermelho","amarelo","verde claro","laranja","azul claro",
+                           "rosa","violeta claro","azul","violeta","verde","preto","bege","amarelo claro"};
+        color.assign(color1, color1+nbcars);
+        bool horiz1[] = {true, false, true, false, false, false, false,
+                         true, false, false, true, true, true};
+        horiz.assign(horiz1, horiz1+nbcars);
+        int len1[] = {2,3,2,2,2,2,3,3,2,2,2,2,2};
+        len.assign(len1,len1+nbcars);
+        int moveon1[] = {2,0,0,4,1,2,5,3,3,2,4,5,5};
+        moveon.assign(moveon1,moveon1+nbcars);
+        int start1[] = {3,0,1,0,1,1,1,0,3,4,4,0,3};
+        vector<int> start(start1,start1+nbcars);
+        State* s = new State(start);
+        s = solve(s);
+        printSolution(s);
+    }
+
     /*
      * imprime uma solução
      */
 
     void printSolution(State* s)
     {
-        // A SER COMPLETADO
+
+        nbMoves = 0;
+        for (s; s->prev != NULL; s = s->prev){
+            nbMoves++;
+
+            if(horiz[s->c]){
+                if(s->d == 1){
+                    cout << "Veículo " << color[s->c] << " para a direita" << endl;
+                }else{
+                    cout << "Veículo " << color[s->c] << " para a esquerda" << endl;
+                }
+            }else{
+                if(s->d == 1){
+                    cout << "Veículo " << color[s->c] << " para baixo" << endl;
+                }else{
+                    cout << "Veículo " << color[s->c] << " para cima" << endl;
+                }
+            }
+        }
+
+        cout << nbMoves << " deslocamentos." << endl;
+
     }
 
 };
-
-
 
 
 void test1()
@@ -464,5 +487,5 @@ void test1()
 int main()
 {
     RushHour *rh = new RushHour;
-    rh->test3();
+    rh->solve40();
 }
