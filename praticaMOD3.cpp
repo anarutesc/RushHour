@@ -425,7 +425,7 @@ public:
     {
         
         nbMoves = 0;
-		stack<*State> St;
+		stack<State*> St;
         
         for (State* aux = s; aux->prev != NULL; aux = aux->prev){
             nbMoves++;
