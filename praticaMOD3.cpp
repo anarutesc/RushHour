@@ -18,7 +18,7 @@ using __gnu_cxx::hash_set;
 using namespace std;
 class State
 {
-
+    
 public:
     /*
      * o estado fornece a posição de cada veículo, utilizando a seguinte convenção :
@@ -27,14 +27,14 @@ public:
      * (lembrete: a coluna mais à esquerda é 0, e a linha mais alta é 0)
      */
     vector<int> pos;
-
+    
     /*
      * nós guardamos qual o deslocamento levou a este estado
      */
     int c;
     int d;
     State* prev;
-
+    
     /*
      * constrói um estado inicial (c e d recebem qualquer valor = lixo)
      */
@@ -46,7 +46,7 @@ public:
             pos.push_back(p[i]);
         prev = NULL;
     }
-
+    
     /*
      * constrói um estado obtido a partir de s deslocando-se o veículo c de d (-1 ou +1)
      */
@@ -54,18 +54,18 @@ public:
     {
         this->c = c;
         this->d = d;
-
+        
         prev = s;
         pos = s->pos;
         pos[c] = pos[c] + d;
     }
-
+    
     // nós ganhamos?
     bool success()
     {
         return pos[0]==4; // A SER COMPLETADO
     }
-
+    
     bool equals(State* s)
     {
         if (s->pos.size() != pos.size())
@@ -74,13 +74,13 @@ public:
             exit(1);
         }
         int tamanho = pos.size();
-
+        
         for (int i = 0; i < tamanho; i++)
             if (pos[i] != s->pos[i]) return false;
         return true;
     }
-
-
+    
+    
 };
 
 
@@ -97,10 +97,10 @@ struct hash_state
     size_t operator()(const State* t) const
     {
         int h = 0;
-
+        
         for (int i = 0; i < t->pos.size(); i++)
             h = 37 * h + t->pos[i];
-
+        
         return h;
     }
 };
@@ -110,12 +110,12 @@ struct eq_state
 {
     bool operator()(const State* t1, const State* t2) const
     {
-
+        
         if(t1->pos.size() != t2->pos.size()) return false;
         for(int i=0; i < t1->pos.size(); i++)
         {
             if(t1->pos[i] != t2->pos[i]) return false;
-
+            
         }
         return true;
     }
@@ -123,9 +123,9 @@ struct eq_state
 
 class RushHour
 {
-
+    
 public:
-
+    
     /*
      * a representação do problema é :
      * a grade tem 6 colunas, numeradas 0 a 5 de esquerda para direita
@@ -142,19 +142,19 @@ public:
      * o veiculo de indice 0 é o que tem que sair, temos então
      * horiz[0]==true, len[0]==2, moveon[0]==2
      */
-
+    
     int nbcars;
     vector<string> color;
     vector<bool> horiz;
     vector<int> len;
     vector<int> moveon;
-
+    
     int nbMoves;
     /*
      * a matriz free é utilizada em moves para determinar rapidamente se a casa (i,j) está livre
      */
     bool free[6][6];
-
+    
     void initFree(State* s)
     {
         for(int i = 0; i < 6; i++)
@@ -162,10 +162,10 @@ public:
             for(int j = 0; j < 6; j++)
             {
                 free[i][j] = true;
-
+                
             }
         }
-
+        
         for(int i = 0; i < nbcars; i++)
         {
             if(horiz[i])
@@ -182,13 +182,13 @@ public:
                 free[s->pos[i]+1][moveon[i]] = false;
                 if(len[i] == 3){
                     free[s->pos[i]+2][moveon[i]] = false;
-
+                    
                 }
             }
         }
     }
-
-
+    
+    
     void test2()
     {
         nbcars = 8;
@@ -206,24 +206,24 @@ public:
         {
             for (int j = 0; j < 6; j++)
                 cout << free[i][j] << ' ';
-
+            
             cout << endl;
         }
     }
-
-
-
+    
+    
+    
     /*
      * retorna a lista de deslocamentos a partir de s
      */
-
+    
     list<State*> moves(State* s)
     {
         initFree(s);
         list<State*> l;
-
+        
         for(int i = 0; i < nbcars; i++){
-
+            
             if(horiz[i]){
                 if(s->pos[i] != 0){
                     if(free[moveon[i]][s->pos[i]-1]){
@@ -231,7 +231,8 @@ public:
                         l.push_back(aux);
                     }
                 }
-                if(s->pos[i] != 4 || (s->pos[i] != 3 && len[i] == 3)){
+                //if(s->pos[i] != 4 || (s->pos[i] != 3 && len[i] == 3)){
+                if(s->pos[i] + len[i] < 6){
                     if(free[moveon[i]][s->pos[i]+len[i]]){
                         State *aux = new State(s,i,1);
                         l.push_back(aux);
@@ -244,7 +245,7 @@ public:
                         l.push_back(aux);
                     }
                 }
-                if(s->pos[i] != 4 || (s->pos[i] != 3 && len[i] == 3) ){
+                if(s->pos[i] + len[i] < 6) {
                     if(free[s->pos[i]+len[i]][moveon[i]]){
                         State *aux = new State(s,i,1);
                         l.push_back(aux);
@@ -252,11 +253,11 @@ public:
                 }
             }
         }
-
+        
         return l;
     }
-
-
+    
+    
     void test3(){
         nbcars = 12;
         bool horiz1[] = {true, false, true, false, false, true, false, true,
@@ -272,7 +273,7 @@ public:
         int start02[] = {1,0,3,1,1,4,3,4,4,2,4,2};
         vector<int> start2(start02,start02+nbcars);
         State* s2 = new State(start2);
-
+        
         int n = 0;
         for (list<State*> L = moves(s); !L.empty(); n++) L.pop_front();
         cout << n << endl;
@@ -280,11 +281,11 @@ public:
         {
             for (int j = 0; j < 6; j++)
                 cout << free[i][j] << ' ';
-
+            
             cout << endl;
         }
-
-
+        
+        
         n = 0;
         for (list<State*> L = moves(s2); !L.empty(); n++) L.pop_front();
         cout << n << endl;
@@ -292,13 +293,13 @@ public:
         {
             for (int j = 0; j < 6; j++)
                 cout << free[i][j] << ' ';
-
+            
             cout << endl;
         }
-
+        
     }
-
-
+    
+    
     /*
      * procura uma solução a partir de s
      */
@@ -315,7 +316,7 @@ public:
             list<State*> vizinhos = moves(estadoAtual);
             for(auto i:vizinhos){
                 if(i->success()){
-
+                    
                     return i;
                 }else{
                     if(visited.find(i) == visited.end()){
@@ -324,12 +325,12 @@ public:
                     }
                 }
             }
-
+            
         }
         cerr << "sem solução" << endl;
         exit(1);
     }
-
+    
     void test4() {
         nbcars = 12;
         string color1[] = {"vermelho","verde claro","amarelo","laranja",
@@ -351,7 +352,7 @@ public:
         }
         cout << n << endl;
     }
-
+    
     void solve22() {
         nbcars = 12;
         string color1[] = {"vermelho","verde claro","amarelo","laranja",
@@ -370,7 +371,7 @@ public:
         s = solve(s);
         printSolution(s);
     }
-
+    
     void solve1() {
         nbcars = 8;
         string color1[] = {"vermelho","verde claro","violeta",
@@ -389,7 +390,7 @@ public:
         s = solve(s);
         printSolution(s);
     }
-
+    
     void solve40() {
         nbcars = 13;
         string color1[] = {"vermelho","amarelo","verde claro","laranja","azul claro",
@@ -405,61 +406,68 @@ public:
         int start1[] = {3,0,1,0,1,1,1,0,3,4,4,0,3};
         vector<int> start(start1,start1+nbcars);
         State* s = new State(start);
-        s = solve(s);
-        printSolution(s);
+        //s = solve(s);
+        //printSolution(s);
+        
+        int n = 0;
+        for (s = solve(s); s->prev != NULL; s = s->prev){
+            n++;
+        }
+        cout << n << endl;
     }
-
+    
     /*
      * imprime uma solução
      */
-
+    
     void printSolution(State* s)
     {
-
+        
         nbMoves = 0;
-        for (s; s->prev != NULL; s = s->prev){
+        
+        for (State* aux = s; aux->prev != NULL; aux = aux->prev){
             nbMoves++;
-
-            if(horiz[s->c]){
-                if(s->d == 1){
-                    cout << "Veículo " << color[s->c] << " para a direita" << endl;
+            
+            if(horiz[aux->c]){
+                if(aux->d == 1){
+                    cout << "Veiculo " << color[aux->c] << " para a direita" << endl;
                 }else{
-                    cout << "Veículo " << color[s->c] << " para a esquerda" << endl;
+                    cout << "Veiculo " << color[aux->c] << " para a esquerda" << endl;
                 }
             }else{
-                if(s->d == 1){
-                    cout << "Veículo " << color[s->c] << " para baixo" << endl;
+                if(aux->d == 1){
+                    cout << "Veiculo " << color[aux->c] << " para baixo" << endl;
                 }else{
-                    cout << "Veículo " << color[s->c] << " para cima" << endl;
+                    cout << "Veiculo " << color[aux->c] << " para cima" << endl;
                 }
             }
         }
-
+        
         cout << nbMoves << " deslocamentos." << endl;
-
+        
     }
-
+    
 };
 
 
 void test1()
 {
-
+    
     int positioning[] = {1,0,1,4,2,4,0,1};
     vector<int> start(positioning, positioning+8);
     State* s0 = new State(start);
     cout << (!s0->success()) << endl;
     State* s = new State(s0, 1, 1);
-
+    
     cout << (s->prev == s0) << endl;
     cout << s0->pos[1] << " " << s->pos[1] << endl;
-
+    
     s = new State(s,6,1);
     s = new State(s,1,-1);
     s = new State(s,6,-1);
-
+    
     cout << s->equals(s0) << endl;
-
+    
     s = new State(s0,1,1);
     s = new State(s,2,-1);
     s = new State(s,3,-1);
@@ -476,7 +484,7 @@ void test1()
     s = new State(s,0,1);
     s = new State(s,0,1);
     s = new State(s,0,1);
-
+    
     cout << (s->success()) << endl;
 }
 
@@ -489,3 +497,4 @@ int main()
     RushHour *rh = new RushHour;
     rh->solve40();
 }
+
