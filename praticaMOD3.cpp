@@ -2,6 +2,7 @@
 #include <iostream>
 #include <set>
 #include <queue>
+#include <stack>
 #include <vector>
 #include <hash_set>
 
@@ -424,10 +425,15 @@ public:
     {
         
         nbMoves = 0;
+		stack<*State> St;
         
         for (State* aux = s; aux->prev != NULL; aux = aux->prev){
             nbMoves++;
-            
+			St.push(aux);
+		}
+		
+		while(!St.empty()){
+			State* aux = St.top();            
             if(horiz[aux->c]){
                 if(aux->d == 1){
                     cout << "Veiculo " << color[aux->c] << " para a direita" << endl;
@@ -441,7 +447,9 @@ public:
                     cout << "Veiculo " << color[aux->c] << " para cima" << endl;
                 }
             }
-        }
+			St.pop();
+		}
+
         
         cout << nbMoves << " deslocamentos." << endl;
         
